@@ -1,0 +1,4 @@
+name: DemoPlugin
+main: cn.berberman.demo.DemoPlugin
+version: 1.0
+author: berberman
