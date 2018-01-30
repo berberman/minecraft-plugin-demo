@@ -1,9 +1,10 @@
 package cn.berberman.demo
 
 import cn.berberman.demo.command.CommandHolder
+import cn.berberman.demo.event.EventHolder
 import cn.berberman.demo.extension.asyncLoop
-import org.bukkit.Bukkit
-import org.bukkit.command.CommandMap
+import cn.berberman.demo.extension.getCommandMap
+import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 
 class DemoPlugin : JavaPlugin() {
@@ -12,20 +13,31 @@ class DemoPlugin : JavaPlugin() {
 	}
 
 	override fun onEnable() {
-		LifeCycle.init()
-		asyncLoop { LifeCycle.loop();true }
+		DemoLifeCycle.init()
 		CommandHolder.register(getCommandMap())
+		EventHolder.register()
+		asyncLoop { DemoLifeCycle.loop();true }
 		logger.info("插件启用")
 	}
 
 	override fun onDisable() {
-		LifeCycle.stop()
+		DemoLifeCycle.stop()
+		HandlerList.unregisterAll()
 		logger.info("插件禁用")
 	}
 
-	private fun getCommandMap(): CommandMap =
-			Bukkit.getServer().let {
-				it::class.java.declaredMethods.firstOrNull { it.name == "getCommandMap" }
-						?.invoke(it, null) as CommandMap
-			}
+	@Deprecated("未实现")
+	private fun registerLifeCycle() {
+//		val classes = ClassUtil.getClass()
+////		val revolution=RevolutionClassUtil.getClassName("kotlin")
+//		logger.info("raw")
+//		logger.info(classes.joinToString())
+////		logger.info(revolution.joinToString())
+//		val resultClasses = classes.filter {
+//			it.isAnnotationPresent(LifeCycle::class.java) &&
+//					ClassUtils.isAssignable(it, ILifeCycle::class.java)
+//		}
+//		logger.info("result")
+//		logger.info(resultClasses.joinToString())
+	}
 }
