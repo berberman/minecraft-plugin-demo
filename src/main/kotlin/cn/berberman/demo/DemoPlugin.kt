@@ -13,6 +13,8 @@ class DemoPlugin : JavaPlugin() {
 	}
 
 	override fun onEnable() {
+//		PersistenceFileHolder.load()
+		if (!dataFolder.exists()) dataFolder.mkdir()
 		DemoLifeCycle.init()
 		CommandHolder.register(getCommandMap())
 		EventHolder.register()
@@ -23,6 +25,7 @@ class DemoPlugin : JavaPlugin() {
 	override fun onDisable() {
 		DemoLifeCycle.stop()
 		HandlerList.unregisterAll()
+//		PersistenceFileHolder.save()
 		logger.info("插件禁用")
 	}
 
