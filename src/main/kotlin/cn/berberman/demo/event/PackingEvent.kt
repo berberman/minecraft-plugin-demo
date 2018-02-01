@@ -1,6 +1,7 @@
 package cn.berberman.demo.event
 
 import cn.berberman.demo.extension.emptyListener
+import cn.berberman.demo.extension.logger
 import cn.berberman.demo.extension.plugin
 import cn.berberman.demo.extension.pluginManager
 import org.bukkit.event.Event
@@ -16,5 +17,7 @@ data class PackingEvent<in T : Event>(private val type: Class<out Event>,
 				{ _: Listener, event ->
 					block(event as T)
 				}, plugin)
+		logger.info("注册事件监听器：${type.simpleName}")
+
 	}
 }

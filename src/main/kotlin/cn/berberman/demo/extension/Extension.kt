@@ -13,19 +13,27 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import java.util.logging.Logger
 
-fun asyncLoop(block: () -> Boolean) {
-	object : BukkitRunnable() {
-		override fun run() {
-			var result = block()
-			while (result)
-				result = block()
-			this.cancel()
-		}
-	}.runTaskAsynchronously(JavaPlugin.getPlugin(DemoPlugin::class.java))
+fun asyncLoop(delay: Long = 0L, block: () -> Boolean) = async(delay) {
+	var result = block()
+	while (result)
+		result = block()
 }
+
+
+fun async(delay: Long = 0L, block: () -> Unit): BukkitTask = Bukkit.getScheduler()
+		.let {
+			if (delay != 0L) it.runTaskAsynchronously(plugin, block)
+			else it.runTaskLaterAsynchronously(plugin, block, delay)
+		}
+
+fun runOnServerThread(delay: Long = 0L, block: () -> Unit): BukkitTask = Bukkit.getScheduler()
+		.let {
+			if (delay != 0L) it.runTask(plugin, block)
+			else it.runTaskLater(plugin, block, delay)
+		}
 
 fun getCommandMap(): CommandMap =
 		Bukkit.getServer().let {
@@ -39,9 +47,10 @@ operator fun ChatColor.times(s: String) =
 inline fun <reified T : Entity> World.summonEntity(location: Location) =
 		spawn(location, T::class.java) as T
 
-val logger: Logger = Bukkit.getLogger()
 
 val plugin: DemoPlugin = JavaPlugin.getPlugin(DemoPlugin::class.java)
+
+val logger: Logger = plugin.logger
 
 val pluginManager: PluginManager = Bukkit.getPluginManager()
 

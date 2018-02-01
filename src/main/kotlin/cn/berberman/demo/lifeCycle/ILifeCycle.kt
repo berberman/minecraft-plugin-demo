@@ -1,9 +1,7 @@
 package cn.berberman.demo.lifeCycle
 
 interface ILifeCycle {
-	fun init()
+	fun onEnable()
 
-	fun loop()
-
-	fun stop()
+	fun onDisable()
 }

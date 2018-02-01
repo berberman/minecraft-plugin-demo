@@ -1,5 +1,8 @@
 package cn.berberman.demo.command
 
+import cn.berberman.demo.extension.sendMessage
+import cn.berberman.demo.extension.times
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
@@ -8,26 +11,16 @@ class PackingCommand
  description: String,
  usageMessage: String,
  aliases: List<String>,
- private val action: (CommandSender, String, Array<out String>) -> Boolean,
- private val result: Boolean/*,
- private val exceptionHandler: (Thread, Throwable) -> Unit*/
+ private val action: (CommandSender, String, Array<out String>) -> Unit,
+ private val result: Boolean
 ) : Command(name,
 		description,
 		usageMessage,
-		aliases)
-//Command(name,
-//		description.takeIf { !it.isEmpty() },
-//		usageMessage.takeIf { !it.isEmpty() },
-//		aliases.takeIf { it.isNotEmpty() })
-{
-	override fun execute(p0: CommandSender, p1: String, p: Array<out String>): Boolean {
-//		if (exceptionHandler != { _: Thread, _: Throwable -> })
-//			Thread.currentThread().setUncaughtExceptionHandler { t, e ->
-//				exceptionHandler(t, e)
-//			}
-//		Thread.setDefaultUncaughtExceptionHandler{t, e -> exceptionHandler(t,e) }
-		//TODO 为啥抢不到未检异常处理器
-		return result || action(p0, p1, p)
-	}
+		aliases) {
+	override fun execute(p0: CommandSender, p1: String, p: Array<out String>) =
+			result.apply {
+				if (!this) p0 sendMessage ChatColor.RED * "命令执行错误"
+				action(p0, p1, p)
+			}
 
 }
